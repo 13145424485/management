@@ -1,0 +1,15 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doc.web.member_recharge.mapper.MemberRechargeMapper">
+    <select id = "getRechargeList" resultType="com.doc.web.member_recharge.entity.MemberRecharge">
+          SELECT mr.*,m.name,m.username FROM member_recharge as mr
+          LEFT JOIN member as m ON mr.member_id = m.member_id
+    </select>
+
+    <select id = "getRechargeByMemberId"   parameterType="Long" resultType="com.doc.web.member_recharge.entity.MemberRecharge">
+          SELECT m.name,mr.*,m.username FROM member_recharge as mr
+          LEFT JOIN member as m ON mr.member_id = m.member_id
+          WHERE mr.member_id = #{memberId}
+    </select>
+</mapper>

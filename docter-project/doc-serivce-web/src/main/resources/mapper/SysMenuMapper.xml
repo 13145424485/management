@@ -1,0 +1,33 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.doc.web.sys_menu.mapper.SysMenuMapper">
+    <!--parameterType,告诉 MyBatis，当前 SQL 语句接收的参数是什么类型（如基本类型、对象、Map 等），以便 MyBatis 正确解析参数并替换 SQL 中的 #{} 占位符-->
+<select id="getMenuByUserId" parameterType="long" resultType="com.doc.web.sys_menu.entity.SysMenu">
+    <!--m.*：m 是 sys_menu 表的别名（见后文 AS m），* 表示查询该表的所有字段（如 menu_id、menu_name、order_num 等-->
+    SELECT m.* FROM sys_user_role AS ur
+    <!--LEFT JOIN：SQL 连接方式（左连接），确保即使关联表中无匹配记录，主表记录也会保留（这里用于避免因用户未关联角色导致查询不到结果
+    //ON ur.role_id = r.role_id：连接条件 ——sys_user_role 表的 role_id 与 sys_role 表的 role_id 相等（通过角色 ID 关联用户 - 角色表和角色表）-->
+                 LEFT JOIN sys_role AS r ON ur.role_id = r.role_id
+                 LEFT JOIN sys_role_menu AS rm ON r.role_id = rm.role_id
+                 LEFT JOIN sys_menu AS m ON rm.menu_id = m.menu_id
+         WHERE ur.user_id = #{userId}
+         ORDER BY m.order_num ASC
+    </select>
+
+    <select id="getMenuByMemberId" parameterType="long" resultType="com.doc.web.sys_menu.entity.SysMenu">
+        SELECT m.* FROM member_role AS mr
+                LEFT JOIN sys_role AS r ON mr.role_id = r.role_id
+                LEFT JOIN sys_role_menu AS rm ON r.role_id = rm.role_id
+                LEFT JOIN sys_menu AS m ON m.menu_id = rm.menu_id
+        WHERE mr.member_id = #{userId}
+        <!--过滤出当前会员对应的菜单（只查询该会员能访问的菜单）。-->
+        ORDER BY m.order_num ASC
+    </select>
+    <select id="getMenuByRoleId" parameterType="long" resultType="com.doc.web.sys_menu.entity.SysMenu">
+                SELECT m.* FROM sys_role_menu AS rm, sys_menu AS m
+                WHERE rm.menu_id = m.menu_id
+                AND rm.role_id = #{roleId}
+    </select>
+
+    </mapper>
