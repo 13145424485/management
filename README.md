@@ -135,6 +135,6 @@ root/
 
 ## 📄 许可证
 
-[MIT](LICENSE) © 2025
+[smun](LICENSE) © 2025      有任何问题可以邮箱联系我  2237351892@qq.com
 
 
